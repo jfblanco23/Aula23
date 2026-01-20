@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicios de Análisis Matemático</title>
+    <!-- Cargar MathJax para renderizar fórmulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                ignoreHtmlClass: 'mathjax-ignore',
+                processHtmlClass: 'mathjax-process'
+            }
+        };
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            width: 95%;
+            max-width: 1200px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+            border-bottom: 4px solid #3498db;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .tabs {
+            display: flex;
+            background: #ecf0f1;
+            padding: 0;
+            border-bottom: 2px solid #bdc3c7;
+            overflow-x: auto;
+        }
+        
+        .tab-button {
+            background: none;
+            border: none;
+            padding: 18px 24px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #7f8c8d;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+            position: relative;
+        }
+        
+        .tab-button:hover {
+            color: #2980b9;
+            background: rgba(236, 240, 241, 0.8);
+        }
+        
+        .tab-button.active {
+            color: #2980b9;
+            background: white;
+            border-bottom: 3px solid #3498db;
+            font-weight: 700;
+        }
+        
+        .content {
+            padding: 30px;
+            min-height: 400px;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .exercise-card, .solution-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #3498db;
+        }
+        
+        .exercise-card {
+            border-left-color: #e74c3c;
+        }
+        
+        .solution-card {
+            border-left-color: #27ae60;
+        }
+        
+        .exercise-card h2, .solution-card h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .exercise-card h2 {
+            color: #e74c3c;
+        }
+        
+        .solution-card h2 {
+            color: #27ae60;
+        }
+        
+        ol[type="a"] {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+        
+        ol[type="a"] li {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        
+        ol[type="i"] {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+        
+        ol[type="i"] li {
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+        
+        ul {
+            margin-left: 25px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+        
+        ul li {
+            margin-bottom: 8px;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        
+        .math-container {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            border: 2px solid #e9ecef;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        
+        .step-hidden {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.6s ease;
+            visibility: hidden;
+        }
+        
+        .step-visible {
+            opacity: 1;
+            transform: translateY(0);
+            visibility: visible;
+        }
+        
+        .parabola-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .parabola-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin: 10px 0;
+        }
+        
+        .parabola-caption {
+            font-style: italic;
+            color: #7f8c8d;
+            margin-top: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .empty-tab {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7f8c8d;
+        }
+        
+        .empty-tab h2 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        strong {
+            color: #2c3e50;
+            font-weight: 700;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .exercise-card, .solution-card {
+                padding: 20px;
+            }
+            
+            .tab-button {
+                padding: 15px 18px;
+                font-size: 0.95rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            header {
+                padding: 20px;
+            }
+            
+            header h1 {
+                font-size: 1.7rem;
+            }
+            
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab-button {
+                padding: 12px 16px;
+                font-size: 0.85rem;
+            }
+        }
+        
+        /* Click indicator */
+        .click-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(52, 152, 219, 0.9);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body>
+    <div class="click-indicator">¡Haz clic en cualquier parte para revelar pasos!</div>
+    
+    <div class="container">
+        <header>
+            <h1>Ejercicios de Análisis Matemático</h1>
+            <p class="subtitle">Serie B - Bachillerato</p>
+        </header>
+
+        <nav class="tabs">
+            <button class="tab-button active" data-tab="ejercicio1">Ejercicio 1</button>
+            <button class="tab-button" data-tab="ejercicio2">Ejercicio 2</button>
+            <button class="tab-button" data-tab="ejercicio3">Ejercicio 3</button>
+            <button class="tab-button" data-tab="ejercicio4">Ejercicio 4</button>
+            <button class="tab-button" data-tab="ejercicio5">Ejercicio 5</button>
+        </nav>
+
+        <main class="content">
+            <!-- Ejercicio 1 -->
+            <section id="ejercicio1" class="tab-content active">
+                <div class="exercise-card">
+                    <h2>Ejercicio 1</h2>
+                    <p class="mathjax-process">Sean las funciones \( f(x) = 3x + 1 \) y \( g(x) = x^{2} \).</p>
+                    <ol type="a">
+                        <li class="mathjax-process">Calcula las composiciones \( (f \circ g)(x) \) y \( (g \circ f)(x) \).</li>
+                        <li class="mathjax-process">Determina la función inversa de \( f(x) \).</li>
+                    </ol>
+                </div>
+
+                <div class="solution-card">
+                    <h2>Solución del Ejercicio 1</h2>
+                    <ol type="a">
+                        <li><strong>Composiciones</strong>
+                            <div class="math-container step-hidden mathjax-process">
+                                \[
+                                \begin{aligned}
+                                    (f \circ g)(x) &= f(g(x)) = f(x^{2}) = 3(x^{2}) + 1 = 3x^{2} + 1, \\
+                                    (g \circ f)(x) &= g(f(x)) = g(3x + 1) = (3x + 1)^{2} = 9x^{2} + 6x + 1.
+                                \end{aligned}
+                                \]
+                            </div>
+                            <p class="step-hidden mathjax-process">Por tanto:</p>
+                            <div class="math-container step-hidden mathjax-process">
+                                \[
+                                \boxed{(f \circ g)(x) = 3x^{2} + 1}, \qquad \boxed{(g \circ f)(x) = 9x^{2} + 6x + 1}.
+                                \]
+                            </div>
+                        </li>
+                        <li><strong>Función inversa de \( f(x) = 3x + 1 \)</strong>
+                            <p class="step-hidden mathjax-process">Para hallar la inversa, resolvemos la ecuación \( y = 3x + 1 \) para \( x \):</p>
+                            <div class="math-container step-hidden mathjax-process">
+                                \[
+                                y = 3x + 1 \quad \Longrightarrow \quad y - 1 = 3x \quad \Longrightarrow \quad x = \frac{y - 1}{3}.
+                                \]
+                            </div>
+                            <p class="step-hidden mathjax-process">Intercambiando las variables \( x \) e \( y \), obtenemos la inversa:</p>
+                            <div class="math-container step-hidden mathjax-process">
+                                \[
+                                f^{-1}(x) = \frac{x - 1}{3}.
+                                \]
+                            </div>
+                            <p class="step-hidden mathjax-process">Comprobación:</p>
+                            <div class="math-container step-hidden mathjax-process">
+                                \[
+                                f(f^{-1}(x)) = f\!\left( \frac{x - 1}{3} \right) = 3 \cdot \frac{x - 1}{3} + 1 = x - 1 + 1 = x,
+                                \]
+                                \[
+                                f^{-1}(f(x)) = f^{-1}(3x + 1) = \frac{(3x + 1) - 1}{3} = \frac{3x}{3} = x.
+                                \]
+                            </div>
+                            <p class="step-hidden mathjax-process">Por lo tanto, la función inversa es:</p>
+                            <div class="math-container step-hidden mathjax-process">
+                                \[
+                                \boxed{f^{-1}(x) = \dfrac{x - 1}{3}}.
+                                \]
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- Ejercicio 2 -->
+            <section id="ejercicio2" class="tab-content">
+                <div class="exercise-card">
+                    <h2>Ejercicio 2</h2>
+                    <ol type="a">
+                        <li class="mathjax-process">Determina el dominio de las siguientes funciones:
+                            <div class="math-container mathjax-process">
+                                \[
+                                f(x) = \frac{\ln(x + 2)}{x^2 - 9}, \qquad 
+                                g(x) = \sqrt{x^2 - 5x}.
+                                \]
+                            </div>
+                        </li>
+                        <li class="mathjax-process">Calcula los límites:
+                            <div class="math-container mathjax-process">
+                                \[
+                                \lim_{x \to 3} \frac{x^2 - 9}{\sqrt{x + 6} - 3}, \qquad
+                                \lim_{x \to \infty} \left( x - \sqrt{x^2 + 4x} \right).
+                                \]
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="solution-card">
+                    <h2>Solución del Ejercicio 2</h2>
+                    <ol type="a">
+                        <li><strong>Dominios de las funciones</strong>
+                            <div class="step-hidden">
+                                <ol type="i">
+                                    <li class="mathjax-process"><strong>Función \( f(x) = \dfrac{\ln(x + 2)}{x^{2} - 9} \)</strong>
+                                        <p>Condiciones:</p>
+                                        <ul>
+                                            <li class="mathjax-process">Argumento del logaritmo positivo: \( x + 2 > 0 \Rightarrow x > -2 \).</li>
+                                            <li class="mathjax-process">Denominador no nulo: \( x^{2} - 9 \neq 0 \Rightarrow x \neq \pm 3 \).</li>
+                                        </ul>
+                                        <p class="mathjax-process">Intersectando: \( x > -2 \) excluye \( x = -3 \) automáticamente, pero debemos excluir \( x = 3 \).</p>
+                                        <div class="math-container mathjax-process">
+                                            \[
+                                            \boxed{\text{Dom}(f) = (-2,\, 3) \cup (3,\, \infty)}.
+                                            \]
+                                        </div>
+                                    </li>
+                                    <li class="mathjax-process"><strong>Función \( g(x) = \sqrt{x^{2} - 5x} \)</strong>
+                                        <p class="mathjax-process">El radicando debe ser mayor o igual que cero:</p>
+                                        <div class="math-container mathjax-process">
+                                            \[
+                                            x^{2} - 5x \geq 0.
+                                            \]
+                                        </div>
+                                        <p class="mathjax-process">Resolvemos la ecuación asociada:</p>
+                                        <div class="math-container mathjax-process">
+                                            \[
+                                            x^{2} - 5x = 0 \quad \Rightarrow \quad x(x - 5) = 0 \quad \Rightarrow \quad x = 0 \;\text{o}\; x = 5.
+                                            \]
+                                        </div>
+                                        <p class="mathjax-process">Como el coeficiente de \( x^2 \) es positivo (\( a = 1 > 0 \)), la parábola abre hacia arriba.</p>
+                                        
+                                        <!-- Imagen de la parábola -->
+                                        <div class="parabola-container">
+                                            <img src="https://placehold.co/400x200/3498db/ffffff?text=Gr%C3%A1fica+x%C2%B2-5x" alt="Representación gráfica de la parábola x² - 5x" class="parabola-image">
+                                            <p class="parabola-caption">Representación gráfica de \( x^2 - 5x \geq 0 \)</p>
+                                        </div>
+                                        
+                                        <p class="mathjax-process">La expresión \( x^2 - 5x \) es:</p>
+                                        <ul>
+                                            <li class="mathjax-process">positiva en \( (-\infty, 0) \),</li>
+                                            <li class="mathjax-process">negativa en \( (0, 5) \),</li>
+                                            <li class="mathjax-process">positiva en \( (5, \infty) \).</li>
+                                        </ul>
+                                        <p class="mathjax-process">Como buscamos \( x^2 - 5x \geq 0 \), incluimos las raíces. Por tanto:</p>
+                                        <div class="math-container mathjax-process">
+                                            \[
+                                            \boxed{\text{Dom}(g) = (-\infty,\, 0] \cup [5,\, \infty)}.
+                                            \]
+                                        </div>
+                                    </li>
+                                </ol>
+                            </div>
+                        </li>
+                        <li><strong>Cálculo de límites</strong>
+                            <div class="step-hidden">
+                                <ul>
+                                    <li class="mathjax-process"><strong>Límite 1:</strong>
+                                        <div class="math-container mathjax-process">
+                                            \[
+                                            \lim_{x \to 3} \frac{x^{2} - 9}{\sqrt{x + 6} - 3}
+                                            \]
+                                        </div>
+                                        <p class="mathjax-process">Es una indeterminación \( \dfrac{0}{0} \). Racionalizamos el denominador:</p>
+                                        <div class="math-container mathjax-process">
+                                            \[
+                                            \lim_{x \to 3} \frac{x^{2} - 9}{\sqrt{x + 6} - 3}
+                                            = \lim_{x \to 3} \frac{(x - 3)(x + 3)}{\sqrt{x + 6} - 3} \cdot \frac{\sqrt{x + 6} + 3}{\sqrt{x + 6} + 3}
+                                            \]
+                                            \[
+                                            = \lim_{x \to 3} \frac{(x - 3)(x + 3)\big( \sqrt{x + 6} + 3 \big)}{(x + 6) - 9}
+                                            = \lim_{x \to 3} \frac{(x - 3)(x + 3)\big( \sqrt{x + 6} + 3 \big)}{x - 3}.
+                                            \]
+                                        </div>
+                                        <p class="mathjax-process">Simplificamos \( x - 3 \) (válido porque \( x \neq 3 \) en el límite):</p>
+                                        <div class="math-container mathjax-process">
+                                            \[
+                                            = \lim_{x \to 3} (x + 3)\big( \sqrt{x + 6} + 3 \big).
+                                            \]
+                                        </div>
+                                        <p class="mathjax-process">Ahora sustituimos:</p>
+                                        <div class="math-container mathjax-process">
+                                            \[
+                                            = (3 + 3)\big( \sqrt{3 + 6} + 3 \big) = 6 \cdot (3 + 3) = 36.
+                                            \]
+                                        </div>
+                                        <p class="mathjax-process">Por tanto,</p>
+                                        <div class="math-container mathjax-process">
+                                            \[
+                                            \boxed{ \lim_{x \to 3} \frac{x^{2} - 9}{\sqrt{x + 6} - 3} = 36 }.
+                                            \]
+                                        </div>
+                                    </li>
+                                    <li class="mathjax-process"><strong>Límite 2:</strong>
+                                        <div class="math-container mathjax-process">
+                                            \[
+                                            \lim_{x \to \infty} \left( x - \sqrt{x^{2} + 4x} \right)
+                                            \]
+                                        </div>
+                                        <p class="mathjax-process">Indeterminación del tipo \( \infty - \infty \). Multiplicamos por el conjugado:</p>
+                                        <div class="math-container mathjax-process">
+                                            \[
+                                            \lim_{x \to \infty} \left( x - \sqrt{x^{2} + 4x} \right)
+                                            = \lim_{x \to \infty} \frac{ \big( x - \sqrt{x^{2} + 4x} \big) \big( x + \sqrt{x^{2} + 4x} \big) }{ x + \sqrt{x^{2} + 4x} }
+                                            \]
+                                            \[
+                                            = \lim_{x \to \infty} \frac{ x^{2} - (x^{2} + 4x) }{ x + \sqrt{x^{2} + 4x} }
+                                            = \lim_{x \to \infty} \frac{ -4x }{ x + \sqrt{x^{2} + 4x} }.
+                                            \]
+                                        </div>
+                                        <p class="mathjax-process">Factorizamos \( x \) en el denominador. Como \( x \to +\infty \), \( x > 0 \), luego \( \sqrt{x^{2}} = x \):</p>
+                                        <div class="math-container mathjax-process">
+                                            \[
+                                            \sqrt{x^{2} + 4x} = \sqrt{x^{2}\!\left(1 + \frac{4}{x}\right)} = x \sqrt{1 + \frac{4}{x}}.
+                                            \]
+                                        </div>
+                                        <p class="mathjax-process">Entonces:</p>
+                                        <div class="math-container mathjax-process">
+                                            \[
+                                            \lim_{x \to \infty} \frac{ -4x }{ x + x \sqrt{1 + \frac{4}{x}} }
+                                            = \lim_{x \to \infty} \frac{ -4x }{ x \left( 1 + \sqrt{1 + \frac{4}{x}} \right) }
+                                            = \lim_{x \to \infty} \frac{ -4 }{ 1 + \sqrt{1 + \frac{4}{x}} }.
+                                            \]
+                                        </div>
+                                        <p class="mathjax-process">Al tomar el límite, \( \dfrac{4}{x} \to 0 \), así que:</p>
+                                        <div class="math-container mathjax-process">
+                                            \[
+                                            = \frac{ -4 }{ 1 + \sqrt{1 + 0} } = \frac{ -4 }{ 2 } = -2.
+                                            \]
+                                        </div>
+                                        <p class="mathjax-process">Por tanto,</p>
+                                        <div class="math-container mathjax-process">
+                                            \[
+                                            \boxed{ \lim_{x \to \infty} \left( x - \sqrt{x^{2} + 4x} \right) = -2 }.
+                                            \]
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- Ejercicio 3 -->
+            <section id="ejercicio3" class="tab-content">
+                <div class="exercise-card">
+                    <h2>Ejercicio 3</h2>
+                    <p class="mathjax-process">Considera la función definida por:</p>
+                    <div class="math-container mathjax-process">
+                        \[
+                        f(x) =
+                        \begin{cases}
+                            \dfrac{x^2 - 1}{x + 1}, & \text{si } x < -1, \\
+                            2,                       & \text{si } x = -1, \\
+                            \sqrt{x + 1},            & \text{si } x > -1.
+                        \end{cases}
+                        \]
+                    </div>
+                    <ol type="a">
+                        <li class="mathjax-process">Estudia la continuidad de \( f \) en \( x = -1 \). Si presenta discontinuidad, clasifícala.</li>
+                        <li class="mathjax-process">Representa esquemáticamente la gráfica de \( f \) en un entorno de \( x = -1 \).</li>
+                    </ol>
+                </div>
+
+                <div class="solution-card">
+                    <h2>Solución del Ejercicio 3</h2>
+                    <ol type="a">
+                        <li><strong>Continuidad en \( x = -1 \)</strong>
+                            <p class="step-hidden mathjax-process">Para \( x < -1 \),</p>
+                            <div class="math-container step-hidden mathjax-process">
+                                \[
+                                f(x) = \frac{x^{2} - 1}{x + 1} = \frac{(x - 1)(x + 1)}{x + 1} = x - 1, \quad x \neq -1.
+                                \]
+                            </div>
+                            <p class="step-hidden mathjax-process">Por tanto,</p>
+                            <div class="math-container step-hidden mathjax-process">
+                                \[
+                                \lim_{x \to -1^-} f(x) = \lim_{x \to -1^-} (x - 1) = -2.
+                                \]
+                            </div>
+                            <p class="step-hidden mathjax-process">Para \( x > -1 \),</p>
+                            <div class="math-container step-hidden mathjax-process">
+                                \[
+                                f(x) = \sqrt{x + 1},
+                                \]
+                            </div>
+                            <p class="step-hidden mathjax-process">luego</p>
+                            <div class="math-container step-hidden mathjax-process">
+                                \[
+                                \lim_{x \to -1^+} f(x) = \sqrt{-1 + 1} = 0.
+                                \]
+                            </div>
+                            <p class="step-hidden mathjax-process">Además,</p>
+                            <div class="math-container step-hidden mathjax-process">
+                                \[
+                                f(-1) = 2.
+                                \]
+                            </div>
+                            <p class="step-hidden mathjax-process">Como los límites laterales son distintos (\(-2 \neq 0\)), el límite \(\displaystyle \lim_{x \to -1} f(x)\) no existe, y además \(f(-1) = 2\) no coincide con ninguno de ellos.  
+                            La función presenta una <strong>discontinuidad de salto</strong> en \( x = -1 \).</p>
+                        </li>
+                        <li><strong>Esquema de la gráfica cerca de \( x = -1 \)</strong>
+                            <p class="step-hidden mathjax-process">En un entorno de \( x = -1 \):</p>
+                            <ul class="step-hidden">
+                                <li class="mathjax-process">Para \( x < -1 \), la gráfica se aproxima a la recta \( y = x - 1 \), con un círculo abierto en \((-1,-2)\).</li>
+                                <li class="mathjax-process">Para \( x > -1 \), la gráfica es la rama de \( y = \sqrt{x + 1} \), con un círculo abierto en \((-1,0)\).</li>
+                                <li class="mathjax-process">En \( x = -1 \), hay un punto aislado en \((-1,2)\) que representa el valor \( f(-1) = 2 \).</li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- Ejercicio 4 -->
+            <section id="ejercicio4" class="tab-content">
+                <div class="exercise-card">
+                    <h2>Ejercicio 4</h2>
+                    <ol type="a">
+                        <li class="mathjax-process">Deriva y simplifica:
+                            <div class="math-container mathjax-process">
+                                \[
+                                f(x) = \left( \ln(2x + 1) \right)^3, \qquad
+                                g(x) = \frac{e^{x}}{x^2 + 1}, \qquad
+                                h(x) = \sin\!\big( \sqrt{x^2 + 1} \,\big).
+                                \]
+                            </div>
+                        </li>
+                        <li class="mathjax-process">Halla la ecuación de la recta tangente a la curva \( y = \dfrac{x}{e^x} \) en el punto donde \( x = 0 \).</li>
+                    </ol>
+                </div>
+
+                <div class="solution-card">
+                    <h2>Solución del Ejercicio 4</h2>
+                    <ol type="a">
+                        <li><strong>Derivadas</strong>
+                            <ul class="step-hidden">
+                                <li class="mathjax-process">Para \( f(x) = \big(\ln(2x+1)\big)^3 \):
+                                    <div class="math-container mathjax-process">
+                                        \[
+                                        f'(x) = 3\big(\ln(2x+1)\big)^2 \cdot \frac{2}{2x+1}
+                                        = \boxed{\, f'(x) = \dfrac{6\big(\ln(2x+1)\big)^2}{2x+1} \,}.
+                                        \]
+                                    </div>
+                                </li>
+                                <li class="mathjax-process">Para \( g(x) = \dfrac{e^x}{x^2+1} \) (regla del cociente):
+                                    <div class="math-container mathjax-process">
+                                        \[
+                                        g'(x) = \frac{(e^x)(x^2+1) - e^x(2x)}{(x^2+1)^2}
+                                        = \frac{e^x\big(x^2+1-2x\big)}{(x^2+1)^2}
+                                        = \boxed{\, g'(x) = \dfrac{e^x(x^2 - 2x + 1)}{(x^2+1)^2} \,}.
+                                        \]
+                                    </div>
+                                </li>
+                                <li class="mathjax-process">Para \( h(x) = \sin\big( \sqrt{x^2+1} \big) \):
+                                    <div class="math-container mathjax-process">
+                                        \[
+                                        h'(x) = \cos\big(\sqrt{x^2+1}\big)\cdot \frac{d}{dx}\big(\sqrt{x^2+1}\big)
+                                        = \cos\big(\sqrt{x^2+1}\big)\cdot \frac{x}{\sqrt{x^2+1}}.
+                                        \]
+                                        \[
+                                        \boxed{\, h'(x) = \dfrac{x\,\cos\big(\sqrt{x^2+1}\big)}{\sqrt{x^2+1}} \,}.
+                                        \]
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><strong>Recta tangente a \( y = \dfrac{x}{e^x} \) en \( x = 0 \)</strong>
+                            <p class="step-hidden mathjax-process">La función puede escribirse como \( y = x e^{-x} \).  
+                            Derivando:</p>
+                            <div class="math-container step-hidden mathjax-process">
+                                \[
+                                y' = e^{-x} + x(-e^{-x}) = e^{-x}(1 - x).
+                                \]
+                            </div>
+                            <p class="step-hidden mathjax-process">En \( x = 0 \):</p>
+                            <div class="math-container step-hidden mathjax-process">
+                                \[
+                                y(0) = \frac{0}{e^0} = 0, \qquad y'(0) = e^0(1 - 0) = 1.
+                                \]
+                            </div>
+                            <p class="step-hidden mathjax-process">La recta tangente en \( x = 0 \) tiene pendiente \( m = 1 \) y pasa por el punto \((0,0)\):</p>
+                            <div class="math-container step-hidden mathjax-process">
+                                \[
+                                \boxed{\, y = x \,}.
+                                \]
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- Ejercicio 5 -->
+            <section id="ejercicio5" class="tab-content">
+                <div class="exercise-card">
+                    <h2>Ejercicio 5</h2>
+                    <p class="mathjax-process">Dada la función \( f(x) = \dfrac{x^2}{x - 2} \), se pide:</p>
+                    <ol type="a">
+                        <li class="mathjax-process">Sus asíntotas (verticales, horizontales u oblicuas).</li>
+                        <li class="mathjax-process">Sus intervalos de crecimiento y decrecimiento, así como sus extremos relativos.</li>
+                        <li class="mathjax-process">Un esbozo cualitativo de su gráfica, usando la información anterior.</li>
+                    </ol>
+                </div>
+
+                <div class="solution-card">
+                    <h2>Solución del Ejercicio 5</h2>
+                    <ol type="a">
+                        <li><strong>Asíntotas</strong>
+                            <p class="step-hidden mathjax-process">La función está definida para \( x \neq 2 \), por lo que existe una asíntota vertical en:</p>
+                            <div class="math-container step-hidden mathjax-process">
+                                \[
+                                \boxed{\, x = 2 \,}.
+                                \]
+                            </div>
+                            <p class="step-hidden mathjax-process">Como el grado del numerador es mayor que el del denominador, no hay asíntota horizontal; al realizar la división:</p>
+                            <div class="math-container step-hidden mathjax-process">
+                                \[
+                                \frac{x^2}{x-2} = x + 2 + \frac{4}{x-2},
+                                \]
+                            </div>
+                            <p class="step-hidden mathjax-process">por lo que la función tiene una asíntota oblicua dada por:</p>
+                            <div class="math-container step-hidden mathjax-process">
+                                \[
+                                \boxed{\, y = x + 2 \,}.
+                                \]
+                            </div>
+                        </li>
+                        <li><strong>Crecimiento y decrecimiento (esbozo del procedimiento)</strong>
+                            <p class="step-hidden mathjax-process">Se calcula la derivada:</p>
+                            <div class="math-container step-hidden mathjax-process">
+                                \[
+                                f'(x) = \frac{(2x)(x-2) - x^2}{(x-2)^2}
+                                = \frac{x^2 - 4x}{(x-2)^2}
+                                = \frac{x(x-4)}{(x-2)^2}.
+                                \]
+                            </div>
+                            <p class="step-hidden mathjax-process">Los puntos críticos provienen de \( x = 0 \) y \( x = 4 \) (y se estudia también el comportamiento en la discontinuidad \( x = 2 \)). A partir del signo de \( f'(x) \) en los intervalos \((-\infty,0)\), \((0,2)\), \((2,4)\) y \((4,\infty)\) se determinan los tramos de crecimiento y decrecimiento y se localizan los extremos relativos.</p>
+                        </li>
+                        <li><strong>Esbozo de la gráfica</strong>
+                            <p class="step-hidden mathjax-process">Para dibujar la gráfica se tiene en cuenta:</p>
+                            <ul class="step-hidden">
+                                <li class="mathjax-process">La asíntota vertical \( x = 2 \) y la oblicua \( y = x + 2 \).</li>
+                                <li class="mathjax-process">Los puntos de corte con los ejes y los extremos relativos hallados en el apartado anterior.</li>
+                                <li class="mathjax-process">El comportamiento de la función en cada intervalo determinado por \( x = 0, 2, 4 \).</li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>© 2026 Ejercicios de Análisis Matemático | Serie B</p>
+        </footer>
+    </div>
+
+    <script>
+        // Tab switching functionality
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+                
+                // Remove active class from all buttons and content
+                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                
+                // Add active class to clicked button and corresponding content
+                button.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
+                
+                // Reset steps when switching tabs
+                resetSteps();
+                
+                // Process MathJax for the new tab content
+                if (typeof MathJax !== 'undefined' && MathJax.typeset) {
+                    MathJax.typeset(document.getElementById(tabId));
+                }
+            });
+        });
+        
+        // Step revelation functionality
+        let currentStepIndex = 0;
+        let allSteps = [];
+        
+        function updateSteps() {
+            // Get all step-hidden elements from the currently active tab
+            const activeTab = document.querySelector('.tab-content.active');
+            allSteps = activeTab ? activeTab.querySelectorAll('.step-hidden') : [];
+            currentStepIndex = 0;
+        }
+        
+        function revealNextStep() {
+            if (currentStepIndex < allSteps.length) {
+                allSteps[currentStepIndex].classList.add('step-visible');
+                currentStepIndex++;
+                
+                // Trigger MathJax to reprocess the newly revealed content
+                if (typeof MathJax !== 'undefined' && MathJax.typeset) {
+                    MathJax.typeset([allSteps[currentStepIndex - 1]]);
+                }
+            }
+        }
+        
+        function resetSteps() {
+            allSteps.forEach(step => {
+                step.classList.remove('step-visible');
+            });
+            updateSteps();
+        }
+        
+        // Initialize steps on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateSteps();
+            
+            // Process MathJax for initial content
+            if (typeof MathJax !== 'undefined' && MathJax.typeset) {
+                MathJax.typeset();
+            }
+        });
+        
+        // Update steps when switching tabs
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', updateSteps);
+        });
+        
+        // Click anywhere to reveal next step
+        document.addEventListener('click', (e) => {
+            // Don't trigger on tab buttons or links
+            if (!e.target.closest('.tab-button') && !e.target.closest('a')) {
+                revealNextStep();
+            }
+        });
+    </script>
+</body>
+</html>
+
